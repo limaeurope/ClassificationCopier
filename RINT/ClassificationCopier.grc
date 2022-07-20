@@ -5,15 +5,15 @@
 
 'STR#' 32000 "Add-on Name and Description" {
 /* [  1] */		"ClassificationCopier"
-/* [  2] */		"Add-on; Copies properties from Uniclass 1 to 2 for selected objects"
+/* [  2] */		"Add-on; Copies properties from Uniclass 1.5 to 2.0 for selected objects"
 }
 
 
 'STR#' 32506 "Solid Operations Menu" {
 /* [   ] */		"LIMA"
 /* [   ] */		"ClassificationCopier"
-/* [  1] */		"Copy UniClass properties^E3"
-/* [  1] */		"Copy UniClass properties with report^E3"
-/* [  1] */		"Copy UniClass properties with report only errors^E3"
+/* [  1] */		"Copy Uniclass properties^E3"
+/* [  1] */		"Copy Uniclass properties with report^E3"
+/* [  1] */		"Copy Uniclass properties with report only errors^E3"
 }
 

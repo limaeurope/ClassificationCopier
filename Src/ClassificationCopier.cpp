@@ -7,10 +7,11 @@
 #include	"APIEnvir.h"
 #include	"ACAPinc.h"					// also includes APIdefs.h
 #include	"APICommon.h"
-//
+
 #include	"ClassificationCopier.h"
 #include	"DG.h"
-#include	<stdlib.h>
+//#include	<stdlib.h>
+#include	"Algorithms.hpp"
 
 using namespace std;
 
@@ -159,10 +160,10 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 		{
 			GS::Array<GS::Pair<API_Guid, API_Guid>>	systemItemPairs;
 
-			auto is_uniclass2 = [&UNICLASS2](GS::Pair<API_Guid, API_Guid> p) { return p.first == UNICLASS2; };
-			bool hasUniclass2 = find_if(begin(systemItemPairs), end(systemItemPairs), is_uniclass2);
-
 			err = ACAPI_Element_GetClassificationItems(elemGuid, systemItemPairs);
+
+			auto is_uniclass2 = [UNICLASS2](GS::Pair<API_Guid, API_Guid> p) { return p.first == UNICLASS2; };
+			bool hasUniclass2 = find_if(begin(systemItemPairs), end(systemItemPairs), is_uniclass2) != end(systemItemPairs);
 
 			if (!hasUniclass2)
 			{
@@ -182,29 +183,28 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 								if (err == NoError)
 									if (!i_onlyErrors)
 									{
-										dialogString += "Success: element " + APIGuidToString(elemGuid) + " Uniclass 1 ID: " + item.id + " ( " + item.name + " ) " + "\n";
+										dialogString += "Success: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ( " + item.name + " ) " + "\n";
 									}
-
 								secondSelection.Push(selNeigs[i]);
 							}
 							else
 							{
-								dialogString += "Name mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 1 ID: " + item.id + " ' " + item.name + " ' differs from: ' " + allItems[item.id].name + " ' " + "\n";
+								dialogString += "Name mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ' " + item.name + " ' differs from: ' " + allItems[item.id].name + " ' " + "\n";
 							}
 						}
 						else
 						{
-							dialogString += "Id mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 1 ID: " + item.id + " ( " + item.name + " ) has no matching ID in Uniclass 2" + "\n";
+							dialogString += "Id mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ( " + item.name + " ) has no matching ID in Uniclass 2015 2.0" + "\n";
 						}
 					}
 				}
 
 				if (!isFound)
-					dialogString += "Not found: element " + APIGuidToString(elemGuid) + " has no Uniclass 1 ID\n";
+					dialogString += "Not found: element " + APIGuidToString(elemGuid) + " has no Uniclass 2015 1.0 ID\n";
 			}
 			else
 			{
-				dialogString += "Not needed: element " + APIGuidToString(elemGuid) + " already has Uniclass 2 ID\n";
+				dialogString += "Not needed: element " + APIGuidToString(elemGuid) + " already has Uniclass 2015 2.0 ID\n";
 			}
 		}
 		else
@@ -216,9 +216,9 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 	if (i_writeReport)
 		ACAPI_WriteReport(dialogString, false);
 
-	err = ACAPI_Element_DeselectAll();
+	//err = ACAPI_Element_DeselectAll();
 
-	err = ACAPI_Element_Select(secondSelection, true);
+	err = ACAPI_Element_Select(secondSelection, false);
 }
 
 // -----------------------------------------------------------------------------

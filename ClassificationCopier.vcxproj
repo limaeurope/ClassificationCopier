@@ -346,7 +346,7 @@
     <Library Include="$(ACDevKitModules)\DGLib\Win\DGImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(ACDevKitModules)\RS\Win\RSImp.LIB">
+    <Library Condition="'$(ACVersion)'== 25" Include="$(ACDevKitModules)\RS\Win\RSImp.LIB">
       <FileType>Document</FileType>
     </Library>	
   </ItemGroup>
