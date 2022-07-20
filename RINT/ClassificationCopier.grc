@@ -14,5 +14,6 @@
 /* [   ] */		"ClassificationCopier"
 /* [  1] */		"Copy UniClass properties^E3"
 /* [  1] */		"Copy UniClass properties with report^E3"
+/* [  1] */		"Copy UniClass properties with report only errors^E3"
 }
 

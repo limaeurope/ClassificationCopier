@@ -11,5 +11,5 @@
 #if !defined _COPY_CLASSIFICATIONS_H
 #define _COPY_CLASSIFICATIONS_H
 
-void	CopyClassifications(const bool i_writeReport = false);
+void	CopyClassifications(const bool i_writeReport = false, const bool i_onlyErrors = false);
 #endif
