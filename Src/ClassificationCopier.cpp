@@ -10,7 +10,6 @@
 
 #include	"ClassificationCopier.h"
 #include	"DG.h"
-//#include	<stdlib.h>
 #include	"Algorithms.hpp"
 
 using namespace std;
@@ -23,80 +22,82 @@ using namespace std;
 
 // ---------------------------------- Prototypes -------------------------------
 
-static bool IsClassificationApplicableForElement(const API_Element &i_element)
+
+static bool IsClassificationApplicableForElement(const API_ElemTypeID &i_elementType)
 {
-	return	i_element.header.typeID == API_WallID
-		||	i_element.header.typeID == API_ColumnID
-		||	i_element.header.typeID == API_BeamID
-		||	i_element.header.typeID == API_WindowID
-		||	i_element.header.typeID == API_DoorID
-		||	i_element.header.typeID == API_ObjectID
-		||	i_element.header.typeID == API_LampID
-		||	i_element.header.typeID == API_SlabID
-		||	i_element.header.typeID == API_RoofID
-		||	i_element.header.typeID == API_MeshID
-		//||	i_element.header.typeID == API_DimensionID
-		//||	i_element.header.typeID == API_RadialDimensionID
-		//||	i_element.header.typeID == API_LevelDimensionID
-		//||	i_element.header.typeID == API_AngleDimensionID
-		//||	i_element.header.typeID == API_TextID
-		//||	i_element.header.typeID == API_LabelID
-		||	i_element.header.typeID == API_ZoneID
-		//||	i_element.header.typeID == API_HatchID
-		//||	i_element.header.typeID == API_LineID
-		//||	i_element.header.typeID == API_PolyLineID
-		//||	i_element.header.typeID == API_ArcID
-		//||	i_element.header.typeID == API_CircleID
-		//||	i_element.header.typeID == API_SplineID
-		//||	i_element.header.typeID == API_HotspotID
-		//||	i_element.header.typeID == API_CutPlaneID
-		//||	i_element.header.typeID == API_CameraID
-		//||	i_element.header.typeID == API_CamSetID
-		//||	i_element.header.typeID == API_SectElemID
-		//||	i_element.header.typeID == API_DrawingID
-		//||	i_element.header.typeID == API_PictureID
-		//||	i_element.header.typeID == API_DetailID
-		//||	i_element.header.typeID == API_ElevationID
-		//||	i_element.header.typeID == API_InteriorElevationID
-		//||	i_element.header.typeID == API_WorksheetID
-		//||	i_element.header.typeID == API_HotlinkID
-		||	i_element.header.typeID == API_CurtainWallID
-		||	i_element.header.typeID == API_CurtainWallSegmentID
-		||	i_element.header.typeID == API_CurtainWallFrameID
-		||	i_element.header.typeID == API_CurtainWallPanelID
-		||	i_element.header.typeID == API_CurtainWallJunctionID
-		||	i_element.header.typeID == API_CurtainWallAccessoryID
-		||	i_element.header.typeID == API_ShellID
-		||	i_element.header.typeID == API_SkylightID
-		||	i_element.header.typeID == API_MorphID
-		//||	i_element.header.typeID == API_ChangeMarkerID
-		||	i_element.header.typeID == API_StairID
-		||	i_element.header.typeID == API_RiserID
-		||	i_element.header.typeID == API_TreadID
-		||	i_element.header.typeID == API_StairStructureID
-		||	i_element.header.typeID == API_RailingID
-		||	i_element.header.typeID == API_RailingToprailID
-		||	i_element.header.typeID == API_RailingHandrailID
-		||	i_element.header.typeID == API_RailingRailID
-		||	i_element.header.typeID == API_RailingPostID
-		||	i_element.header.typeID == API_RailingInnerPostID
-		||	i_element.header.typeID == API_RailingBalusterID
-		||	i_element.header.typeID == API_RailingPanelID
-		||	i_element.header.typeID == API_RailingSegmentID
-		||	i_element.header.typeID == API_RailingNodeID
-		||	i_element.header.typeID == API_RailingBalusterSetID
-		||	i_element.header.typeID == API_RailingPatternID
-		||	i_element.header.typeID == API_RailingToprailEndID
-		||	i_element.header.typeID == API_RailingHandrailEndID
-		||	i_element.header.typeID == API_RailingRailEndID
-		||	i_element.header.typeID == API_RailingToprailConnectionID
-		||	i_element.header.typeID == API_RailingHandrailConnectionID
-		||	i_element.header.typeID == API_RailingRailConnectionID
-		||	i_element.header.typeID == API_RailingEndFinishID
-		||	i_element.header.typeID == API_BeamSegmentID
-		||	i_element.header.typeID == API_ColumnSegmentID
-		||	i_element.header.typeID == API_OpeningID;
+	return	i_elementType == API_WallID
+		||	i_elementType == API_ColumnID
+		||	i_elementType == API_BeamID
+		||	i_elementType == API_WindowID
+		||	i_elementType == API_DoorID
+		||	i_elementType == API_ObjectID
+		||	i_elementType == API_LampID
+		||	i_elementType == API_SlabID
+		||	i_elementType == API_RoofID
+		||	i_elementType == API_MeshID
+		//||	i_elementType == API_DimensionID
+		//||	i_elementType == API_RadialDimensionID
+		//||	i_elementType == API_LevelDimensionID
+		//||	i_elementType == API_AngleDimensionID
+		//||	i_elementType == API_TextID
+		//||	i_elementType == API_LabelID
+		||	i_elementType == API_ZoneID
+		//||	i_elementType == API_HatchID
+		//||	i_elementType == API_LineID
+		//||	i_elementType == API_PolyLineID
+		//||	i_elementType == API_ArcID
+		//||	i_elementType == API_CircleID
+		//||	i_elementType == API_SplineID
+		//||	i_elementType == API_HotspotID
+		//||	i_elementType == API_CutPlaneID
+		//||	i_elementType == API_CameraID
+		//||	i_elementType == API_CamSetID
+		//||	i_elementType == API_SectElemID
+		//||	i_elementType == API_DrawingID
+		//||	i_elementType == API_PictureID
+		//||	i_elementType == API_DetailID
+		//||	i_elementType == API_ElevationID
+		//||	i_elementType == API_InteriorElevationID
+		//||	i_elementType == API_WorksheetID
+		//||	i_elementType == API_HotlinkID
+		||	i_elementType == API_CurtainWallID
+		||	i_elementType == API_CurtainWallSegmentID
+		||	i_elementType == API_CurtainWallFrameID
+		||	i_elementType == API_CurtainWallPanelID
+		||	i_elementType == API_CurtainWallJunctionID
+		||	i_elementType == API_CurtainWallAccessoryID
+		||	i_elementType == API_ShellID
+		||	i_elementType == API_SkylightID
+		||	i_elementType == API_MorphID
+		//||	i_elementType == API_ChangeMarkerID
+		||	i_elementType == API_StairID
+		||	i_elementType == API_RiserID
+		||	i_elementType == API_TreadID
+		||	i_elementType == API_StairStructureID
+		||	i_elementType == API_RailingID
+		||	i_elementType == API_RailingToprailID
+		||	i_elementType == API_RailingHandrailID
+		||	i_elementType == API_RailingRailID
+		||	i_elementType == API_RailingPostID
+		||	i_elementType == API_RailingInnerPostID
+		||	i_elementType == API_RailingBalusterID
+		||	i_elementType == API_RailingPanelID
+		||	i_elementType == API_RailingSegmentID
+		||	i_elementType == API_RailingNodeID
+		||	i_elementType == API_RailingBalusterSetID
+		||	i_elementType == API_RailingPatternID
+		||	i_elementType == API_RailingToprailEndID
+		||	i_elementType == API_RailingHandrailEndID
+		||	i_elementType == API_RailingRailEndID
+		||	i_elementType == API_RailingToprailConnectionID
+		||	i_elementType == API_RailingHandrailConnectionID
+		||	i_elementType == API_RailingRailConnectionID
+		||	i_elementType == API_RailingEndFinishID
+		||	i_elementType == API_BeamSegmentID
+		||	i_elementType == API_ColumnSegmentID
+		||	i_elementType == API_OpeningID;
 }
+
 
 static void GatherAllDescendantOfClassification(const API_ClassificationItem& item, GS::HashTable<GS::UniString, API_ClassificationItem>& allDescendant)
 {
@@ -108,6 +109,7 @@ static void GatherAllDescendantOfClassification(const API_ClassificationItem& it
 		GatherAllDescendantOfClassification(directChildren[i], allDescendant);
 	}
 }
+
 
 void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_onlyErrors /*= false*/)
 {
@@ -156,7 +158,11 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 		bool isFound = false;
 		elemGuid = element.header.guid = selNeigs[i].guid;
 		err = ACAPI_Element_Get(&element);
-		if (IsClassificationApplicableForElement(element))
+#if ACVER >= 26
+		if (IsClassificationApplicableForElement(element.header.type.typeID))
+#else
+		if (IsClassificationApplicableForElement(element.header.typeID))
+#endif
 		{
 			GS::Array<GS::Pair<API_Guid, API_Guid>>	systemItemPairs;
 
@@ -221,6 +227,7 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 	err = ACAPI_Element_Select(secondSelection, false);
 }
 
+
 // -----------------------------------------------------------------------------
 // Elements: Solid Operations Functions
 // -----------------------------------------------------------------------------
@@ -229,7 +236,6 @@ GSErrCode __ACENV_CALL ElementsSolidOperation (const API_MenuParams *menuParams)
 {
 	return ACAPI_CallUndoableCommand ("Copy Classifications",
 		[&] () -> GSErrCode {
-
 			switch (menuParams->menuItemRef.itemIndex) {
 				case 1:		CopyClassifications();				break;
 				case 2:		CopyClassifications(true);			break;

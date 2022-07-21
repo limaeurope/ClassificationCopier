@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Src\$(ProjectName).cpp" />
+    <ClCompile Include="Src\APICommon.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\APICommon.h" />
+    <ClInclude Include="Src\ClassificationCopier.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="$(ACDevKitModules)\DGLib\Win\DGImp.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSRoot\Win\GSRootImp.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\InputOutput\Win\InputOutputImp.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\COMMUNICATIONCLIENT\WIN\COMMUNICATION.CLIENTIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\COMMUNICATIONCOMMON\WIN\COMMUNICATION.COMMONIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\DGGRAPHIX\WIN\DGGRAPHIXIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GEOMETRY\WIN\GEOMETRYIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GRAPHIX\WIN\GRAPHIXIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSMODELER2D\WIN\GSMODELER2DIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSMODELER\WIN\GSMODELERIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSMSECTIONS\WIN\GSMSECTIONSIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSXML\WIN\GSXMLIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GSXMLUTILS\WIN\GSXMLUTILSIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GXIMAGEBASE\WIN\GXIMAGEBASEIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GXIMAGE\WIN\GXIMAGEIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GX\WIN\GXIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\GXMEDIA\WIN\GXMEDIAIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\HTTP\WIN\HTTPIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\JSONCONVERSION\WIN\JSONCONVERSIONIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\JSON\WIN\JSONIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\LIBXL\WIN\LIBXLIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\MODEL3D\WIN\MODEL3DIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\MODEL3DVIEWERCONTROL\WIN\MODEL3DVIEWERCONTROLIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\NETWORK\WIN\NETWORKIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\PATTERN\WIN\PATTERNIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\RS\WIN\RSIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\SECURECOMMUNICATION\WIN\SECURECOMMUNICATIONIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\TEXTENGINE\WIN\TEXTENGINEIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\TRANSPARENTWINDOWLIB\WIN\TRANSPARENTWINDOWIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\UCLIB\WIN\UCIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\UDLIB\WIN\UDIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\VBATTRIBUTELIST\WIN\VBATTRIBUTELISTIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\VBELEMDIALOGS\WIN\VBELEMDIALOGSIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\VBUTILS\WIN\VBUTILSIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\VECTORIMAGE\WIN\VECTORIMAGEIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitSupport)\Lib\Win\ACAP_STATD.lib">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\ANALYTICALMODELAPI\WIN\ANALYTICALMODELAPIIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\BREP\WIN\BREPIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+    <Library Include="$(ACDevKitModules)\BUILTINLIBRARY\WIN\BUILTINLIBRARYIMP.LIB">
+      <Filter>Lib</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="RINT\$(ProjectName).grc" />
+    <CustomBuild Include="RFIX\$(ProjectName)Fix.grc" />
+    <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{82cfc169-1eab-4b9e-b3f5-efdf6be48765}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

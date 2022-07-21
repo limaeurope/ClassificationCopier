@@ -13,7 +13,7 @@
 /* [   ] */		"LIMA"
 /* [   ] */		"ClassificationCopier"
 /* [  1] */		"Copy Uniclass properties^E3"
-/* [  1] */		"Copy Uniclass properties with report^E3"
-/* [  1] */		"Copy Uniclass properties with report only errors^E3"
+/* [  2] */		"Copy Uniclass properties with report^E3"
+/* [  3] */		"Copy Uniclass properties with report only errors^E3"
 }
 
