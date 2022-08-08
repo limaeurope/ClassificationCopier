@@ -121,15 +121,34 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 	API_ClassificationSystem	system, system2;
 	API_Element					element;
 
-	const API_Guid UNICLASS1 = APIGuidFromString("86FA0C53-4087-4D0A-9C03-495633C570FB");
-	const API_Guid UNICLASS2 = APIGuidFromString("22F9077D-DA34-42BB-8930-C1179B93D7E3");
+	//const API_Guid UNICLASS1 = APIGuidFromString("86FA0C53-4087-4D0A-9C03-495633C570FB");
+	//const API_Guid UNICLASS2 = APIGuidFromString("22F9077D-DA34-42BB-8930-C1179B93D7E3");
 
-	system.guid  = UNICLASS1;
-	system2.guid = UNICLASS2;
+	//system.guid  = UNICLASS1;
+	//system2.guid = UNICLASS2;
+
+	const GS::UniString UNICLASS1_NAME = "Uniclass 2015 - LIMA";
+	const GS::UniString UNICLASS1_VER  = "v 1.0";
+	const GS::UniString UNICLASS2_NAME = "Uniclass 2015";
+	const GS::UniString UNICLASS2_VER  = "LIMA - v2.0";
+
+	system.name = UNICLASS1_NAME;
+	system.editionVersion = UNICLASS1_VER;
+
+	system2.name = UNICLASS2_NAME;
+	system2.editionVersion = UNICLASS2_VER;
 
 	err = ACAPI_Classification_GetClassificationSystem(system);
-	err = ACAPI_Classification_GetClassificationSystem(system2);
+	if (err)
+		ACAPI_WriteReport("No UniClass 2015 1.5 classification system found", true);
 
+	err = ACAPI_Classification_GetClassificationSystem(system2);
+	if (err)
+		ACAPI_WriteReport("No UniClass 2015 2.0 classification system found", true);
+
+	const API_Guid uniclass1 = system.guid;
+	const API_Guid uniclass2 = system2.guid;
+	
 	err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, false);
 
 	if (err == APIERR_NOSEL || selectionInfo.typeID == API_SelEmpty) {
@@ -168,13 +187,13 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 
 			err = ACAPI_Element_GetClassificationItems(elemGuid, systemItemPairs);
 
-			auto is_uniclass2 = [UNICLASS2](GS::Pair<API_Guid, API_Guid> p) { return p.first == UNICLASS2; };
+			auto is_uniclass2 = [uniclass2](GS::Pair<API_Guid, API_Guid> p) { return p.first == uniclass2; };
 			bool hasUniclass2 = find_if(begin(systemItemPairs), end(systemItemPairs), is_uniclass2) != end(systemItemPairs);
 
 			if (!hasUniclass2)
 			{
 				for (UInt32 j = 0; j < systemItemPairs.GetSize(); j++) {
-					if (systemItemPairs[j].first == UNICLASS1) {
+					if (systemItemPairs[j].first == uniclass1) {
 						API_ClassificationItem item, item2;
 						item.guid = systemItemPairs[j].second;
 						err = ACAPI_Classification_GetClassificationItem(item);
