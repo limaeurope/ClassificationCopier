@@ -15,5 +15,29 @@
 /* [  1] */		"Copy Uniclass properties^E3"
 /* [  2] */		"Copy Uniclass properties with report^E3"
 /* [  3] */		"Copy Uniclass properties with report only errors^E3"
+/* [  4] */		"Settings..."
 }
 
+'GDLG'	32400	Modal			 40   40   490 322 	"Settings" {
+/* [  1] */ Button				380  288   100  24  LargePlain "Close"
+/* [  2] */ PopupControl         10   10   200  24  24 5
+/* [  3] */ PopupControl        280   10   200  24  24 5
+/* [  4] */ CheckBox			 10   44   260  20  LargePlain "Report success"
+/* [  5] */ CheckBox			 10   74   260  20  LargePlain "Report Name mismatch"
+/* [  6] */ CheckBox			 10  104   260  20  LargePlain "Report Id mismatch"
+/* [  7] */ CheckBox			 10  134   260  20  LargePlain "Report Not found"
+/* [  8] */ CheckBox			 10  164   260  20  LargePlain "Report Not needed"
+/* [  9] */ CheckBox			 10  194   260  20  LargePlain "Report Not applicable"
+}
+
+'DLGH'  32400  DLG_32500_Fill_Settings {
+1	""							Button_0
+2	""							PopupControl_0
+3	""							PopupControl_1
+4	""							CheckBox_0
+5	""							CheckBox_1
+6	""							CheckBox_2
+7	""							CheckBox_3
+8	""							CheckBox_4
+9	""							CheckBox_5
+}

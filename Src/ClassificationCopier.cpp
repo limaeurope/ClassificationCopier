@@ -16,12 +16,176 @@ using namespace std;
 
 // ---------------------------------- Types ------------------------------------
 
+//typedef struct {
+//	GS::UniString	 sName;
+//	GS::UniString	 sVer;
+//	API_Guid		 guid;
+//} ClassificationSystem;
+
+typedef struct {
+	//GS::HashTable<Int64, API_PropertyDefinition> definitionsTable;
+	Int32 iSource;
+	Int32 iTarget;
+
+	//API_ClassificationSystem sourceSystem;
+	//API_ClassificationSystem targetSystem;
+
+	GS::HashTable<UInt16, API_ClassificationSystem> systems;
+	Int32 iSuccessCheckBox;
+	Int32 iNameMismtchCheckBox;
+	Int32 iIdMismtchCheckBox;
+	Int32 iNotFoundCheckBox;
+	Int32 iNotNeededCheckBox;
+	Int32 iNotApplicableCheckBox;
+} CntlDlgData;
+
+#define OK_BUTTON				1
+#define SOURCE_POPUP			2
+#define TARGET_POPUP			3
+#define SUCCESS_CHECKBOX		4
+#define NAME_MISMTCH_CHECKBOX	5
+#define ID_MISMTCH_CHECKBOX		6
+#define NOT_FOUND_CHECKBOX		7
+#define NOT_NEEDED_CHECKBOX		8
+#define NOT_APPLICABLE_CHECKBOX	9
 
 // ---------------------------------- Variables --------------------------------
 
+static CntlDlgData			cntlDlgData;
 
 // ---------------------------------- Prototypes -------------------------------
 
+void GetClassificationSystems(short dialID)
+{
+	GS::Array<API_ClassificationSystem> systems{};
+
+	GSErrCode err = ACAPI_Classification_GetClassificationSystems(systems);
+	UInt16 i = 2;
+
+	for (auto sys : systems)
+	{
+		cntlDlgData.systems.Add(i++, sys);
+	}
+
+	DGPopUpDeleteItem(dialID, SOURCE_POPUP, DG_ALL_ITEMS);
+	DGPopUpDeleteItem(dialID, TARGET_POPUP, DG_ALL_ITEMS);
+	DGPopUpInsertItem(dialID, SOURCE_POPUP, DG_LIST_BOTTOM);
+	DGPopUpInsertItem(dialID, TARGET_POPUP, DG_LIST_BOTTOM);
+
+	for (auto i : cntlDlgData.systems.Keys())
+	{
+		auto sys = cntlDlgData.systems[i];
+		auto src = cntlDlgData.systems.ContainsKey(cntlDlgData.iSource) ? &cntlDlgData.systems[cntlDlgData.iSource] : nullptr;
+		auto trg = cntlDlgData.systems.ContainsKey(cntlDlgData.iTarget) ? &cntlDlgData.systems[cntlDlgData.iTarget] : nullptr;
+
+		DGPopUpInsertItem(dialID, SOURCE_POPUP, DG_LIST_BOTTOM);
+		DGPopUpSetItemText(dialID, SOURCE_POPUP, DG_LIST_BOTTOM, sys.name);
+		DGPopUpInsertItem(dialID, TARGET_POPUP, DG_LIST_BOTTOM);
+		DGPopUpSetItemText(dialID, TARGET_POPUP, DG_LIST_BOTTOM, sys.name);
+	}
+}
+
+
+void RefreshUI(short dialID)
+{
+	for (auto i : cntlDlgData.systems.Keys())
+	{
+		if (cntlDlgData.iTarget == i)
+			DGPopUpSetItemStatus(dialID, SOURCE_POPUP, i, DG_IS_DISABLE);
+		else
+			DGPopUpSetItemStatus(dialID, SOURCE_POPUP, i, DG_IS_ENABLE);
+
+		if (cntlDlgData.iSource == i)
+			DGPopUpSetItemStatus(dialID, TARGET_POPUP, i, DG_IS_DISABLE);
+		else
+			DGPopUpSetItemStatus(dialID, TARGET_POPUP, i, DG_IS_ENABLE);
+	}
+
+
+	DGSetCheckBoxState(dialID, SUCCESS_CHECKBOX, cntlDlgData.iSuccessCheckBox);
+	DGSetCheckBoxState(dialID, NAME_MISMTCH_CHECKBOX, cntlDlgData.iNameMismtchCheckBox);
+	DGSetCheckBoxState(dialID, ID_MISMTCH_CHECKBOX, cntlDlgData.iIdMismtchCheckBox);
+	DGSetCheckBoxState(dialID, NOT_FOUND_CHECKBOX, cntlDlgData.iNotFoundCheckBox);
+	DGSetCheckBoxState(dialID, NOT_NEEDED_CHECKBOX, cntlDlgData.iNotNeededCheckBox);
+	DGSetCheckBoxState(dialID, NOT_APPLICABLE_CHECKBOX, cntlDlgData.iNotApplicableCheckBox);
+}
+
+
+static short DGCALLBACK CntlDlgCallBack(short message, short dialID, short item, DGUserData userData, DGMessageData msgData)
+{
+	short result = 0;
+
+	switch (message) {
+	case DG_MSG_INIT:
+	{
+		//GSErrCode	err;
+
+		GetClassificationSystems(dialID);
+		RefreshUI(dialID);
+
+		break;
+	}
+	case DG_MSG_CLICK:
+		switch (item) {
+		case DG_OK:
+			//case DG_CANCEL:
+			result = item;
+			break;
+
+		}
+
+		break;
+	case DG_MSG_CLOSE:
+		result = item;
+		if (item == DG_OK) {
+		}
+		break;
+	case DG_MSG_CHANGE:
+		switch (item) {
+		case SOURCE_POPUP:
+		{
+			cntlDlgData.iSource = DGPopUpGetSelected(dialID, SOURCE_POPUP);
+
+			RefreshUI(dialID);
+			break;
+		}
+		case TARGET_POPUP:
+		{
+			cntlDlgData.iTarget = DGPopUpGetSelected(dialID, TARGET_POPUP);
+
+			RefreshUI(dialID);
+			break;
+		}
+		case SUCCESS_CHECKBOX:
+		case NAME_MISMTCH_CHECKBOX:
+		case ID_MISMTCH_CHECKBOX:
+		case NOT_FOUND_CHECKBOX:
+		case NOT_NEEDED_CHECKBOX:
+		case NOT_APPLICABLE_CHECKBOX:
+			cntlDlgData.iSuccessCheckBox = DGGetCheckBoxState(dialID, SUCCESS_CHECKBOX) - 1;
+			cntlDlgData.iNameMismtchCheckBox = DGGetCheckBoxState(dialID, NAME_MISMTCH_CHECKBOX) - 1;
+			cntlDlgData.iIdMismtchCheckBox = DGGetCheckBoxState(dialID, ID_MISMTCH_CHECKBOX) - 1;
+			cntlDlgData.iNotFoundCheckBox = DGGetCheckBoxState(dialID, NOT_FOUND_CHECKBOX) - 1;
+			cntlDlgData.iNotNeededCheckBox = DGGetCheckBoxState(dialID, NOT_NEEDED_CHECKBOX) - 1;
+			cntlDlgData.iNotApplicableCheckBox = DGGetCheckBoxState(dialID, NOT_APPLICABLE_CHECKBOX) - 1;
+
+			//RefreshUI(dialID);
+
+			break;
+		}
+
+		break;
+	}
+
+	return result;
+}
+
+static GSErrCode	DisplaySettingsWindow()
+{
+	GSErrCode err = DGModalDialog(ACAPI_GetOwnResModule(), 32400, ACAPI_GetOwnResModule(), CntlDlgCallBack, (DGUserData)&cntlDlgData);
+
+	return err;
+}
 
 static bool IsClassificationApplicableForElement(const API_ElemTypeID &i_elementType)
 {
@@ -259,7 +423,8 @@ GSErrCode __ACENV_CALL ElementsSolidOperation (const API_MenuParams *menuParams)
 				case 1:		CopyClassifications();				break;
 				case 2:		CopyClassifications(true);			break;
 				case 3:		CopyClassifications(true, true);	break;
-
+				case 4:		DisplaySettingsWindow();			break;
+					
 				default:										break;
 			}
 
