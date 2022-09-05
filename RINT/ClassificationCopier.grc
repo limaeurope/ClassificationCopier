@@ -18,16 +18,17 @@
 /* [  4] */		"Settings..."
 }
 
-'GDLG'	32400	Modal			 40   40   490 322 	"Settings" {
-/* [  1] */ Button				380  288   100  24  LargePlain "Close"
+'GDLG'	32400	Modal			 40   40   490 223  "Settings" {
+/* [  1] */ Button				380  189   100  24  LargePlain "Close"
 /* [  2] */ PopupControl         10   10   200  24  24 5
 /* [  3] */ PopupControl        280   10   200  24  24 5
-/* [  4] */ CheckBox			 10   44   260  20  LargePlain "Report success"
-/* [  5] */ CheckBox			 10   74   260  20  LargePlain "Report Name mismatch"
-/* [  6] */ CheckBox			 10  104   260  20  LargePlain "Report Id mismatch"
-/* [  7] */ CheckBox			 10  134   260  20  LargePlain "Report Not found"
-/* [  8] */ CheckBox			 10  164   260  20  LargePlain "Report Not needed"
-/* [  9] */ CheckBox			 10  194   260  20  LargePlain "Report Not applicable"
+/* [  4] */ CheckBox			 10   39   260  20  LargePlain "Report success"
+/* [  5] */ CheckBox			 10   64   260  20  LargePlain "Report success with name mapping"
+/* [  6] */ CheckBox			 10   89   260  20  LargePlain "Report Name mismatch"
+/* [  7] */ CheckBox			 10  114   260  20  LargePlain "Report Id mismatch"
+/* [  8] */ CheckBox			 10  139   260  20  LargePlain "Report Not found"
+/* [  9] */ CheckBox			 10  164   260  20  LargePlain "Report Not needed"
+/* [ 10] */ CheckBox			 10  189   260  20  LargePlain "Report Not applicable"
 }
 
 'DLGH'  32400  DLG_32500_Fill_Settings {
@@ -40,4 +41,5 @@
 7	""							CheckBox_3
 8	""							CheckBox_4
 9	""							CheckBox_5
+9	""							CheckBox_6
 }

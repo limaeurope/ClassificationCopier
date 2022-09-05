@@ -16,56 +16,86 @@ using namespace std;
 
 // ---------------------------------- Types ------------------------------------
 
-//typedef struct {
-//	GS::UniString	 sName;
-//	GS::UniString	 sVer;
-//	API_Guid		 guid;
-//} ClassificationSystem;
+struct IdNamePair {
+	GS::UniString	id;
+	GS::UniString	name;
+};
 
-typedef struct {
-	//GS::HashTable<Int64, API_PropertyDefinition> definitionsTable;
+ struct CntlDlgData {
 	Int32 iSource;
 	Int32 iTarget;
 
-	//API_ClassificationSystem sourceSystem;
-	//API_ClassificationSystem targetSystem;
-
 	GS::HashTable<UInt16, API_ClassificationSystem> systems;
-	Int32 iSuccessCheckBox;
-	Int32 iNameMismtchCheckBox;
-	Int32 iIdMismtchCheckBox;
-	Int32 iNotFoundCheckBox;
-	Int32 iNotNeededCheckBox;
-	Int32 iNotApplicableCheckBox;
-} CntlDlgData;
+	Int32 iSuccessCheckBox = 1;
+	Int32 iSuccessMappedCheckBox = 1;
+	Int32 iNameMismtchCheckBox = 1;
+	Int32 iIdMismtchCheckBox = 1;
+	Int32 iNotFoundCheckBox = 1;
+	Int32 iNotNeededCheckBox = 1;
+	Int32 iNotApplicableCheckBox = 1;
 
-#define OK_BUTTON				1
-#define SOURCE_POPUP			2
-#define TARGET_POPUP			3
-#define SUCCESS_CHECKBOX		4
-#define NAME_MISMTCH_CHECKBOX	5
-#define ID_MISMTCH_CHECKBOX		6
-#define NOT_FOUND_CHECKBOX		7
-#define NOT_NEEDED_CHECKBOX		8
-#define NOT_APPLICABLE_CHECKBOX	9
+	//FIXME include Classification system id for various classification systems
+	const GS::HashTable<GS::UniString, IdNamePair> translations{
+		{	{GS::UniString("Ss_20_20_75_15")/*, GS::UniString("Concrete beam systems")*/}, 
+			{GS::UniString("Ss_20_20_75_70"), GS::UniString("Reinforced concrete beam systems")}},
+		{	{GS::UniString("Ss_20_30_75_15")/*, GS::UniString("Concrete column systems")*/}, 
+			{GS::UniString("Ss_20_30_75_70"), GS::UniString("Reinforced concrete column systems")}},
+		{	{GS::UniString("Ss_30_12_85_70")/*, GS::UniString("Reinforced concrete floor, roof or balcony deck systems")*/}, 
+			{GS::UniString("Ss_30_12_85_70"), GS::UniString("Reinforced concrete deck systems")}},
+	};
+} ;
+
+#define OK_BUTTON				 1
+#define SOURCE_POPUP			 2
+#define TARGET_POPUP			 3
+#define SUCCESS_CHECKBOX		 4
+#define SUCCESS_MAPPED_CHECKBOX	 5
+#define NAME_MISMTCH_CHECKBOX	 6
+#define ID_MISMTCH_CHECKBOX		 7
+#define NOT_FOUND_CHECKBOX		 8
+#define NOT_NEEDED_CHECKBOX		 9
+#define NOT_APPLICABLE_CHECKBOX 10
 
 // ---------------------------------- Variables --------------------------------
 
 static CntlDlgData			cntlDlgData;
+static bool					isAddonInitialized = false;
 
 // ---------------------------------- Prototypes -------------------------------
+
+void InitializeAddonData()
+{
+	GS::Array<API_ClassificationSystem> systems{};
+
+	GSErrCode err = ACAPI_Classification_GetClassificationSystems(systems);
+	UInt16 i = 1;
+
+	const GS::UniString UNICLASS1_NAME = "Uniclass 2015 - LIMA";
+	const GS::UniString UNICLASS1_VER = "v 1.0";
+	const GS::UniString UNICLASS2_NAME = "Uniclass 2015";
+	const GS::UniString UNICLASS2_VER = "LIMA - v2.0";
+
+	for (auto sys : systems)
+	{
+		cntlDlgData.systems.Add(++i, sys);
+
+		if (sys.name == UNICLASS1_NAME
+			&& sys.editionVersion == UNICLASS1_VER)
+			cntlDlgData.iSource = i;
+
+		if (sys.name == UNICLASS2_NAME
+			&& sys.editionVersion == UNICLASS2_VER)
+			cntlDlgData.iTarget = i;
+	}
+
+	isAddonInitialized = true;
+}
 
 void GetClassificationSystems(short dialID)
 {
 	GS::Array<API_ClassificationSystem> systems{};
 
 	GSErrCode err = ACAPI_Classification_GetClassificationSystems(systems);
-	UInt16 i = 2;
-
-	for (auto sys : systems)
-	{
-		cntlDlgData.systems.Add(i++, sys);
-	}
 
 	DGPopUpDeleteItem(dialID, SOURCE_POPUP, DG_ALL_ITEMS);
 	DGPopUpDeleteItem(dialID, TARGET_POPUP, DG_ALL_ITEMS);
@@ -79,9 +109,9 @@ void GetClassificationSystems(short dialID)
 		auto trg = cntlDlgData.systems.ContainsKey(cntlDlgData.iTarget) ? &cntlDlgData.systems[cntlDlgData.iTarget] : nullptr;
 
 		DGPopUpInsertItem(dialID, SOURCE_POPUP, DG_LIST_BOTTOM);
-		DGPopUpSetItemText(dialID, SOURCE_POPUP, DG_LIST_BOTTOM, sys.name);
+		DGPopUpSetItemText(dialID, SOURCE_POPUP, DG_LIST_BOTTOM, sys.name + " " + sys.editionVersion);
 		DGPopUpInsertItem(dialID, TARGET_POPUP, DG_LIST_BOTTOM);
-		DGPopUpSetItemText(dialID, TARGET_POPUP, DG_LIST_BOTTOM, sys.name);
+		DGPopUpSetItemText(dialID, TARGET_POPUP, DG_LIST_BOTTOM, sys.name + " " + sys.editionVersion);
 	}
 }
 
@@ -90,6 +120,14 @@ void RefreshUI(short dialID)
 {
 	for (auto i : cntlDlgData.systems.Keys())
 	{
+		if (cntlDlgData.iSource > 0)
+			DGPopUpSetItemStatus(dialID, SOURCE_POPUP, i, DG_IS_ENABLE);
+			DGPopUpSelectItem(dialID, SOURCE_POPUP, cntlDlgData.iSource);
+
+		if (cntlDlgData.iTarget > 0)
+			DGPopUpSetItemStatus(dialID, TARGET_POPUP, i, DG_IS_ENABLE);
+			DGPopUpSelectItem(dialID, TARGET_POPUP, cntlDlgData.iTarget);
+
 		if (cntlDlgData.iTarget == i)
 			DGPopUpSetItemStatus(dialID, SOURCE_POPUP, i, DG_IS_DISABLE);
 		else
@@ -101,8 +139,8 @@ void RefreshUI(short dialID)
 			DGPopUpSetItemStatus(dialID, TARGET_POPUP, i, DG_IS_ENABLE);
 	}
 
-
 	DGSetCheckBoxState(dialID, SUCCESS_CHECKBOX, cntlDlgData.iSuccessCheckBox);
+	DGSetCheckBoxState(dialID, SUCCESS_MAPPED_CHECKBOX, cntlDlgData.iSuccessMappedCheckBox);
 	DGSetCheckBoxState(dialID, NAME_MISMTCH_CHECKBOX, cntlDlgData.iNameMismtchCheckBox);
 	DGSetCheckBoxState(dialID, ID_MISMTCH_CHECKBOX, cntlDlgData.iIdMismtchCheckBox);
 	DGSetCheckBoxState(dialID, NOT_FOUND_CHECKBOX, cntlDlgData.iNotFoundCheckBox);
@@ -118,8 +156,7 @@ static short DGCALLBACK CntlDlgCallBack(short message, short dialID, short item,
 	switch (message) {
 	case DG_MSG_INIT:
 	{
-		//GSErrCode	err;
-
+		if (!isAddonInitialized) InitializeAddonData();
 		GetClassificationSystems(dialID);
 		RefreshUI(dialID);
 
@@ -128,10 +165,8 @@ static short DGCALLBACK CntlDlgCallBack(short message, short dialID, short item,
 	case DG_MSG_CLICK:
 		switch (item) {
 		case DG_OK:
-			//case DG_CANCEL:
 			result = item;
 			break;
-
 		}
 
 		break;
@@ -157,19 +192,19 @@ static short DGCALLBACK CntlDlgCallBack(short message, short dialID, short item,
 			break;
 		}
 		case SUCCESS_CHECKBOX:
+		case SUCCESS_MAPPED_CHECKBOX:
 		case NAME_MISMTCH_CHECKBOX:
 		case ID_MISMTCH_CHECKBOX:
 		case NOT_FOUND_CHECKBOX:
 		case NOT_NEEDED_CHECKBOX:
 		case NOT_APPLICABLE_CHECKBOX:
-			cntlDlgData.iSuccessCheckBox = DGGetCheckBoxState(dialID, SUCCESS_CHECKBOX) - 1;
-			cntlDlgData.iNameMismtchCheckBox = DGGetCheckBoxState(dialID, NAME_MISMTCH_CHECKBOX) - 1;
-			cntlDlgData.iIdMismtchCheckBox = DGGetCheckBoxState(dialID, ID_MISMTCH_CHECKBOX) - 1;
-			cntlDlgData.iNotFoundCheckBox = DGGetCheckBoxState(dialID, NOT_FOUND_CHECKBOX) - 1;
-			cntlDlgData.iNotNeededCheckBox = DGGetCheckBoxState(dialID, NOT_NEEDED_CHECKBOX) - 1;
-			cntlDlgData.iNotApplicableCheckBox = DGGetCheckBoxState(dialID, NOT_APPLICABLE_CHECKBOX) - 1;
-
-			//RefreshUI(dialID);
+			cntlDlgData.iSuccessCheckBox = DGGetCheckBoxState(dialID, SUCCESS_CHECKBOX);
+			cntlDlgData.iSuccessMappedCheckBox = DGGetCheckBoxState(dialID, SUCCESS_MAPPED_CHECKBOX);
+			cntlDlgData.iNameMismtchCheckBox = DGGetCheckBoxState(dialID, NAME_MISMTCH_CHECKBOX);
+			cntlDlgData.iIdMismtchCheckBox = DGGetCheckBoxState(dialID, ID_MISMTCH_CHECKBOX);
+			cntlDlgData.iNotFoundCheckBox = DGGetCheckBoxState(dialID, NOT_FOUND_CHECKBOX);
+			cntlDlgData.iNotNeededCheckBox = DGGetCheckBoxState(dialID, NOT_NEEDED_CHECKBOX);
+			cntlDlgData.iNotApplicableCheckBox = DGGetCheckBoxState(dialID, NOT_APPLICABLE_CHECKBOX);
 
 			break;
 		}
@@ -177,6 +212,7 @@ static short DGCALLBACK CntlDlgCallBack(short message, short dialID, short item,
 		break;
 	}
 
+	ACAPI_KeepInMemory(true);
 	return result;
 }
 
@@ -285,30 +321,10 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 	API_ClassificationSystem	system, system2;
 	API_Element					element;
 
-	//const API_Guid UNICLASS1 = APIGuidFromString("86FA0C53-4087-4D0A-9C03-495633C570FB");
-	//const API_Guid UNICLASS2 = APIGuidFromString("22F9077D-DA34-42BB-8930-C1179B93D7E3");
+	if (!isAddonInitialized) InitializeAddonData();
 
-	//system.guid  = UNICLASS1;
-	//system2.guid = UNICLASS2;
-
-	const GS::UniString UNICLASS1_NAME = "Uniclass 2015 - LIMA";
-	const GS::UniString UNICLASS1_VER  = "v 1.0";
-	const GS::UniString UNICLASS2_NAME = "Uniclass 2015";
-	const GS::UniString UNICLASS2_VER  = "LIMA - v2.0";
-
-	system.name = UNICLASS1_NAME;
-	system.editionVersion = UNICLASS1_VER;
-
-	system2.name = UNICLASS2_NAME;
-	system2.editionVersion = UNICLASS2_VER;
-
-	err = ACAPI_Classification_GetClassificationSystem(system);
-	if (err)
-		ACAPI_WriteReport("No UniClass 2015 1.5 classification system found", true);
-
-	err = ACAPI_Classification_GetClassificationSystem(system2);
-	if (err)
-		ACAPI_WriteReport("No UniClass 2015 2.0 classification system found", true);
+	system = cntlDlgData.systems[cntlDlgData.iSource];
+	system2 = cntlDlgData.systems[cntlDlgData.iTarget];
 
 	const API_Guid uniclass1 = system.guid;
 	const API_Guid uniclass2 = system2.guid;
@@ -363,40 +379,46 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 						err = ACAPI_Classification_GetClassificationItem(item);
 						isFound = true;
 
-						if (allItems.ContainsKey(item.id))
+						if (cntlDlgData.translations.ContainsKey(item.id) && cntlDlgData.iSuccessMappedCheckBox)
+						{
+							err = ACAPI_Element_AddClassificationItem(elemGuid, allItems[cntlDlgData.translations[item.id].id].guid);
+
+							dialogString += "Success: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ( " + item.name + " ) was mapped to " + cntlDlgData.translations[item.id].id + " ( " + cntlDlgData.translations[item.id].name + " ) \n";
+						}
+						else if (allItems.ContainsKey(item.id))
 						{
 							if (allItems[item.id].name == item.name)
 							{
 								err = ACAPI_Element_AddClassificationItem(elemGuid, allItems[item.id].guid);
 
 								if (err == NoError)
-									if (!i_onlyErrors)
+									if (!i_onlyErrors && cntlDlgData.iSuccessCheckBox)
 									{
 										dialogString += "Success: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ( " + item.name + " ) " + "\n";
 									}
 								secondSelection.Push(selNeigs[i]);
 							}
-							else
+							else if (cntlDlgData.iNameMismtchCheckBox)
 							{
 								dialogString += "Name mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ' " + item.name + " ' differs from: ' " + allItems[item.id].name + " ' " + "\n";
 							}
 						}
-						else
+						else if (cntlDlgData.iIdMismtchCheckBox)
 						{
 							dialogString += "Id mismatch: element " + APIGuidToString(elemGuid) + " Uniclass 2015 1.0 ID: " + item.id + " ( " + item.name + " ) has no matching ID in Uniclass 2015 2.0" + "\n";
 						}
 					}
 				}
 
-				if (!isFound)
+				if (!isFound && cntlDlgData.iNotFoundCheckBox)
 					dialogString += "Not found: element " + APIGuidToString(elemGuid) + " has no Uniclass 2015 1.0 ID\n";
 			}
-			else
+			else if (cntlDlgData.iNotNeededCheckBox)
 			{
 				dialogString += "Not needed: element " + APIGuidToString(elemGuid) + " already has Uniclass 2015 2.0 ID\n";
 			}
 		}
-		else
+		else if (cntlDlgData.iNotApplicableCheckBox)
 		{
 			dialogString += "Not applicable: element " + APIGuidToString(elemGuid) + " cannot have a classification\n";
 		}
@@ -415,7 +437,7 @@ void CopyClassifications(const bool i_writeReport /*= false*/, const bool i_only
 // Elements: Solid Operations Functions
 // -----------------------------------------------------------------------------
 
-GSErrCode __ACENV_CALL ElementsSolidOperation (const API_MenuParams *menuParams)
+GSErrCode __ACENV_CALL ClassificationCopier (const API_MenuParams *menuParams)
 {
 	return ACAPI_CallUndoableCommand ("Copy Classifications",
 		[&] () -> GSErrCode {
@@ -430,7 +452,7 @@ GSErrCode __ACENV_CALL ElementsSolidOperation (const API_MenuParams *menuParams)
 
 			return NoError;
 		});
-}		/* ElementsSolidOperation */
+}		/* ClassificationCopier */
 
 
 // -----------------------------------------------------------------------------
@@ -467,13 +489,13 @@ GSErrCode __ACENV_CALL	RegisterInterface (void)
 // -----------------------------------------------------------------------------
 GSErrCode __ACENV_CALL	Initialize (void)
 {
-	GSErrCode err = NoError;
+	GSErrCode err;
 
 	//
 	// Install menu handler callbacks
 	//
 
-	err = ACAPI_Install_MenuHandler (32506, ElementsSolidOperation);
+	err = ACAPI_Install_MenuHandler (32506, ClassificationCopier);
 
 	return err;
 }		/* Initialize */
